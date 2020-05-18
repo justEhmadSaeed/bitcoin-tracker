@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'coin_data.dart';
 
 class PriceScreen extends StatefulWidget {
   @override
@@ -38,12 +39,20 @@ class _PriceScreenState extends State<PriceScreen> {
             ),
           ),
           Container(
-            height: 150.0,
-            alignment: Alignment.center,
-            padding: EdgeInsets.only(bottom: 30.0),
-            color: Colors.lightBlue,
-            child: null,
-          ),
+              height: 150.0,
+              alignment: Alignment.center,
+              padding: EdgeInsets.only(bottom: 30.0),
+              color: Colors.lightBlue,
+              child: DropdownButton<String>(
+                  value: 'USD',
+                  items: [
+                    DropdownMenuItem(child: Text('USD'), value: 'USD'),
+                    DropdownMenuItem(child: Text('EUR'), value: 'EUR'),
+                    DropdownMenuItem(child: Text('GBP'), value: 'GBP'),
+                  ],
+                  onChanged: (value) {
+                    print(value);
+                  })),
         ],
       ),
     );
