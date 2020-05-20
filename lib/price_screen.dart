@@ -17,7 +17,10 @@ class _PriceScreenState extends State<PriceScreen> {
         value: dropdownValue,
         onChanged: (value) {
           setState(() {
-            dropdownValue = value;
+            if (value != dropdownValue) {
+              dropdownValue = value;
+              getExchangeRate(dropdownValue);
+            }
           });
         },
         items: currenciesList
@@ -42,13 +45,14 @@ class _PriceScreenState extends State<PriceScreen> {
             )
             .toList(),
       );
-  String bitcoinValueInUSD = '?';
-  void getExchangeRate() async {
+  String bitcoinValue = '?';
+  void getExchangeRate(currency) async {
     try {
-      double data = await CoinData().getCoinData();
+      bitcoinValue = '?';
+      double data = await CoinData().getCoinData(currency);
       setState(() {
-        bitcoinValueInUSD = data.toStringAsFixed(0);
-        print(bitcoinValueInUSD);
+        bitcoinValue = data.toStringAsFixed(0);
+        print(bitcoinValue);
       });
     } catch (e) {
       print(e);
@@ -58,7 +62,7 @@ class _PriceScreenState extends State<PriceScreen> {
   @override
   void initState() {
     super.initState();
-    getExchangeRate();
+    getExchangeRate(dropdownValue);
   }
 
   @override
@@ -73,23 +77,9 @@ class _PriceScreenState extends State<PriceScreen> {
         children: <Widget>[
           Padding(
             padding: EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0),
-            child: Card(
-              color: Colors.lightBlueAccent,
-              elevation: 5.0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
-                child: Text(
-                  '1 BTC = $bitcoinValueInUSD USD',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
+            child: ReusableCard(
+              bitcoinValue: bitcoinValue,
+              currency: dropdownValue,
             ),
           ),
           Container(
@@ -100,6 +90,35 @@ class _PriceScreenState extends State<PriceScreen> {
             child: Platform.isIOS ? iOSPicker() : androidDropdown(),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ReusableCard extends StatelessWidget {
+  ReusableCard({@required this.bitcoinValue, this.currency});
+
+  final String bitcoinValue;
+  final String currency;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Colors.lightBlueAccent,
+      elevation: 5.0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
+        child: Text(
+          '1 BTC = $bitcoinValue $currency',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 20.0,
+            color: Colors.white,
+          ),
+        ),
       ),
     );
   }
