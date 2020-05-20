@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'coin_data.dart';
 import 'package:flutter/cupertino.dart';
+import 'dart:io' show Platform;
 
 class PriceScreen extends StatefulWidget {
   @override
@@ -9,21 +10,36 @@ class PriceScreen extends StatefulWidget {
 
 class _PriceScreenState extends State<PriceScreen> {
   String dropdownValue = 'USD';
-  List<DropdownMenuItem> getDropdownItems() => currenciesList
-      .map((value) => DropdownMenuItem<String>(
-            child: Text(value),
-            value: value,
-          ))
-      .toList();
 
-  List<Widget> getPickerItems() => currenciesList
-      .map((value) => Text(
-            value,
-            style: TextStyle(
-              color: Colors.white
-            ),
-          ))
-      .toList();
+  DropdownButton<String> androidDropdown() => DropdownButton<String>(
+        value: dropdownValue,
+        onChanged: (value) {
+          setState(() {
+            dropdownValue = value;
+          });
+        },
+        items: currenciesList
+            .map((value) => DropdownMenuItem<String>(
+                  child: Text(value),
+                  value: value,
+                ))
+            .toList(),
+      );
+  CupertinoPicker iOSPicker() => CupertinoPicker(
+        backgroundColor: Colors.lightBlue,
+        itemExtent: 32.0,
+        onSelectedItemChanged: (selectedIndex) {
+          print(selectedIndex);
+        },
+        children: currenciesList
+            .map(
+              (value) => Text(
+                value,
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+            .toList(),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -61,27 +77,10 @@ class _PriceScreenState extends State<PriceScreen> {
             alignment: Alignment.center,
             padding: EdgeInsets.only(bottom: 30.0),
             color: Colors.lightBlue,
-            child: CupertinoPicker(
-                backgroundColor: Colors.lightBlue,
-                itemExtent: 32.0,
-                onSelectedItemChanged: (selectedIndex) {
-                  print(selectedIndex);
-                },
-                children: getPickerItems()
-                ),
+            child: Platform.isIOS ? iOSPicker() : androidDropdown(),
           ),
         ],
       ),
     );
   }
 }
-
-// child: DropdownButton<String>(
-//   value: dropdownValue,
-//   items: getDropdownItems(),
-//   onChanged: (value) {
-//     setState(() {
-//       dropdownValue = value;
-//     });
-//   },
-// ),
