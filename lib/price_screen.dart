@@ -61,14 +61,14 @@ class _PriceScreenState extends State<PriceScreen> {
     }
   }
 
-  // List<CryptoCard> getCards() => cryptoList
-  //     .map(
-  //       (coin) => CryptoCard(
-  //           cryptoCurrency: coin,
-  //           cryptoValue: waiting ? '?' : coinValues[coin],
-  //           dropdownValue: dropdownValue),
-  //     )
-  //     .toList();
+  List<Widget> getCards() => cryptoList
+      .map(
+        (coin) => CryptoCard(
+            cryptoCurrency: coin,
+            cryptoValue: waiting ? '?' : coinValues[coin],
+            dropdownValue: dropdownValue),
+      )
+      .toList();
 
   @override
   void initState() {
@@ -88,20 +88,7 @@ class _PriceScreenState extends State<PriceScreen> {
         children: <Widget>[
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              CryptoCard(
-                  cryptoCurrency: 'BTC',
-                  cryptoValue: waiting ? '?' : coinValues['BTC'],
-                  dropdownValue: dropdownValue),
-              CryptoCard(
-                  cryptoCurrency: 'ETH',
-                  cryptoValue: waiting ? '?' : coinValues['ETH'],
-                  dropdownValue: dropdownValue),
-              CryptoCard(
-                  cryptoCurrency: 'LTC',
-                  cryptoValue: waiting ? '?' : coinValues['LTC'],
-                  dropdownValue: dropdownValue),
-            ],
+            children: getCards(),
           ),
           Container(
             height: 150.0,
