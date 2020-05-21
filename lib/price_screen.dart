@@ -3,8 +3,6 @@ import 'coin_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
 
-const apiKey = 'AC152EEF-1224-4380-AD8A-5D88C052FFBF';
-
 class PriceScreen extends StatefulWidget {
   @override
   _PriceScreenState createState() => _PriceScreenState();
@@ -30,6 +28,7 @@ class _PriceScreenState extends State<PriceScreen> {
                 ))
             .toList(),
       );
+
   CupertinoPicker iOSPicker() => CupertinoPicker(
         backgroundColor: Colors.lightBlue,
         itemExtent: 32.0,
@@ -45,19 +44,31 @@ class _PriceScreenState extends State<PriceScreen> {
             )
             .toList(),
       );
-  String bitcoinValue = '?';
+
+  bool waiting = false;
+  Map coinValues = {};
+
   void getExchangeRate(currency) async {
+    waiting = true;
     try {
-      bitcoinValue = '?';
-      double data = await CoinData().getCoinData(currency);
+      var data = await CoinData().getCoinData(currency);
+      waiting = false;
       setState(() {
-        bitcoinValue = data.toStringAsFixed(0);
-        print(bitcoinValue);
+        coinValues = data;
       });
     } catch (e) {
       print(e);
     }
   }
+
+  // List<CryptoCard> getCards() => cryptoList
+  //     .map(
+  //       (coin) => CryptoCard(
+  //           cryptoCurrency: coin,
+  //           cryptoValue: waiting ? '?' : coinValues[coin],
+  //           dropdownValue: dropdownValue),
+  //     )
+  //     .toList();
 
   @override
   void initState() {
@@ -75,12 +86,22 @@ class _PriceScreenState extends State<PriceScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0),
-            child: ReusableCard(
-              bitcoinValue: bitcoinValue,
-              currency: dropdownValue,
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              CryptoCard(
+                  cryptoCurrency: 'BTC',
+                  cryptoValue: waiting ? '?' : coinValues['BTC'],
+                  dropdownValue: dropdownValue),
+              CryptoCard(
+                  cryptoCurrency: 'ETH',
+                  cryptoValue: waiting ? '?' : coinValues['ETH'],
+                  dropdownValue: dropdownValue),
+              CryptoCard(
+                  cryptoCurrency: 'LTC',
+                  cryptoValue: waiting ? '?' : coinValues['LTC'],
+                  dropdownValue: dropdownValue),
+            ],
           ),
           Container(
             height: 150.0,
@@ -95,31 +116,37 @@ class _PriceScreenState extends State<PriceScreen> {
   }
 }
 
-class ReusableCard extends StatelessWidget {
-  ReusableCard({@required this.bitcoinValue, this.currency});
+class CryptoCard extends StatelessWidget {
+  CryptoCard(
+      {@required this.cryptoCurrency,
+      @required this.cryptoValue,
+      @required this.dropdownValue});
 
-  final String bitcoinValue;
-  final String currency;
+  final String cryptoValue;
+  final String dropdownValue;
+  final String cryptoCurrency;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.lightBlueAccent,
-      elevation: 5.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
-        child: Text(
-          '1 BTC = $bitcoinValue $currency',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 20.0,
-            color: Colors.white,
+    return Padding(
+        padding: EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0),
+        child: Card(
+          color: Colors.lightBlueAccent,
+          elevation: 5.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
           ),
-        ),
-      ),
-    );
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
+            child: Text(
+              '1 $cryptoCurrency = $cryptoValue $dropdownValue',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 20.0,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ));
   }
 }
