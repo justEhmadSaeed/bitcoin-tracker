@@ -8,6 +8,9 @@
 
 ## ✨ Features
 
+- Updated Exchange Rates of BTC, ETH & LTC in any currency.
+- Material Design Approach for Android
+- Cupertino Design for iOS
 
 ## 🐱‍🚀 Installation
 
