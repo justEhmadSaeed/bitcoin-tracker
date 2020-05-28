@@ -33,8 +33,12 @@ class _PriceScreenState extends State<PriceScreen> {
         backgroundColor: Colors.lightBlue,
         itemExtent: 32.0,
         onSelectedItemChanged: (selectedIndex) {
-          print(selectedIndex);
+          setState(() {
+            getExchangeRate(currenciesList[selectedIndex]);
+            dropdownValue = currenciesList[selectedIndex];
+          });
         },
+        scrollController: FixedExtentScrollController(initialItem: 19),
         children: currenciesList
             .map(
               (value) => Text(
