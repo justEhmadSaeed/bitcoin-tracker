@@ -28,3 +28,4 @@ flutter build apk --split-per-abi
 
 ## ⚡ Preview 
 
+![bitcoin-tracker](https://user-images.githubusercontent.com/46846821/83132852-6f22ab80-a0fb-11ea-824e-0f340134d46b.gif)
